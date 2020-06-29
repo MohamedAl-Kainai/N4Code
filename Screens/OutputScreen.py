@@ -1,4 +1,6 @@
 from modules import *
+from Screens.tools.Capturing import capturing
+from Screens.tools.ToolsWidget import ToolsWidget3
 
 Builder.load_string('''
 <outputscreen>:
@@ -9,44 +11,48 @@ Builder.load_string('''
         Rectangle:
             pos: self.pos
             size: self.size
+    FloatLayout:
+        BoxLayout:
+            padding:dp(1),dp(20),0,dp(60)
+            ScrollView:
+                TextInput:
+                    size_hint:1,None
+                    height:self.minimum_height
+                    id:output
+                    text:''
+                    background_color:0,0,0,0
+                    foreground_color:output_text_color
 
-    BoxLayout:
-        TextInput:
-            id:output
-            text:''
-            background_color:0,0,0,0
-            foreground_color:output_text_color
+        ToolsWidget3:
+            pos_hint:{'bottom':1}
+            output:output
 
-    MDFloatingActionButton:
-        icon:'close'
-        on_release:
-            root.manager.transition.direction = 'right'
-            app.root.current = 'menu'
-            output.text = ''
 ''')
-
-class Capturing(list):
-    def __enter__(self):
-        self._stdout = sys.stdout
-        sys.stdout = self._stringio = StringIO()
-        return self
-    def __exit__(self, *args):
-        self.extend(self._stringio.getvalue().splitlines())
-        del self._stringio    # free up some memory
-        sys.stdout = self._stdout
-
 class outputscreen(Screen):
     text = StringProperty('')
     def __init__(self,*args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def on_read(self,line):
-        # do something with the line
-        print(capturing.print(line))
+    def on_line(self,line):
+        self.ids.output.text = open('logout.txt','r').read()
 
     def output(self,text):
-        with Capturing() as out:
+        out = capturing('logout.txt',self.on_line)
+        out.start()
+        try:
             exec(text)
-        for i in out:
-            self.ids.output.text += i+'\n'
+        except BaseException as ex:
+            ex_type, ex_value, ex_traceback = sys.exc_info()
+            trace_back = traceback.extract_tb(ex_traceback)
+            print(ex_type.__name__+': ',end='')
+            print(ex_value,end='')
+            temp = False
+            for trace in trace_back:
+                if temp:
+                    print(f' < line {trace[1]} >')
+                temp = True
+        time.sleep(0.1)
+        self.ids.output.text = open('logout.txt','r').read()
+        out.stop()
+
         self.ids.output.text += '\n[Program finished]'

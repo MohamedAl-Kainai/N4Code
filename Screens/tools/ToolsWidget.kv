@@ -30,9 +30,9 @@
                     root.font_size_minus()
 
 <ToolsWidgetButton@Button>:
-    size_hint:None,None
-    size:dp(10),dp(31)
-    font_size:dp(13)
+    # size_hint:None,None
+    # size:dp(10),dp(31)
+    font_size:dp(15)
     background_color:0,0,0,0
 
 <ToolsWidget2>:
@@ -40,7 +40,8 @@
     size:1,dp(50)
     padding:dp(10)
     code_input:None
-    BoxLayout:
+    GridLayout:
+        rows:1
         canvas:
             Color:
                 rgb:background_bar
@@ -49,55 +50,105 @@
                 pos: self.pos
                 size: self.size
                 radius:[dp(15)]*4
-        FloatLayout:
 
+        # Black box...
+        GridLayout:
+            rows:1
+            spacing:dp(10)
+            canvas:
+                Color:
+                    rgb:hex('000000')
+                RoundedRectangle:
+                    #source: 'mylogo.png'
+                    pos: self.pos
+                    size: self.size
+                    radius:[dp(15)]*4
+            size_hint:None,1
+            size:dp(150),1
+            spacing:dp(1)
+
+            ToolsWidgetButton:
+                text:'" "'
+                color:buttons_color
+                on_release:
+                    root._text(root.code_input.cursor)
+
+            ToolsWidgetButton:
+                text:'( )'
+                color:buttons_color
+                on_release:
+                    root._grup(root.code_input.cursor)
+
+            ToolsWidgetButton:
+                text:'{ }'
+                color:buttons_color
+                on_release:
+                    root._dict(root.code_input.cursor)
+
+            ToolsWidgetButton:
+                text:'[ ]'
+                color:buttons_color
+                on_release:
+                    root._list(root.code_input.cursor)
+
+        GridLayout:
+            rows:1
             MDIconButton:
+                size_hint:None,None
+                size:dp(55),dp(30)
                 icon:'keyboard-tab'
                 theme_text_color:'Custom'
                 text_color:buttons_color
-                pos_hint:{'center_x':.5,'center_y':.5}
+                pos_hint:{'center_y':.5}
                 on_release:
-                    root.tab()
+                    root.tab(root.code_input.cursor)
 
-            BoxLayout:
-                canvas:
-                    Color:
-                        rgb:hex('000000')
-                    RoundedRectangle:
-                        #source: 'mylogo.png'
-                        pos: self.pos
-                        size: self.size
-                        radius:[dp(15)]*4
-                size_hint:None,1
-                size:dp(150),1
-                spacing:dp(1)
-                pos_hint:{'left':1,'center_y':.5}
+<ToolsWidget3>:
+    size_hint:1,None
+    size:1,dp(50)
+    padding:dp(10)
+    code_input:None
+    GridLayout:
+        rows:1
+        canvas:
+            Color:
+                rgb:background_bar
+            RoundedRectangle:
+                #source: 'mylogo.png'
+                pos: self.pos
+                size: self.size
+                radius:[dp(15)]*4
 
-                FloatLayout:
-                    ToolsWidgetButton:
-                        text:'" "'
-                        color:buttons_color
-                        pos_hint:{'center_x':.85,'center_y':.5}
-                        on_release:
-                            root._text(root.code_input.cursor)
+        MDIconButton:
+            size_hint:None,None
+            size:dp(55),dp(30)
+            icon:'plus'
+            theme_text_color:'Custom'
+            text_color:buttons_color
+            pos_hint:{'center_y':.5}
+            on_release:
+                root.font_size_plus()
 
-                    ToolsWidgetButton:
-                        text:'( )'
-                        color:buttons_color
-                        pos_hint:{'center_x':.6,'center_y':.5}
-                        on_release:
-                            root._grup(root.code_input.cursor)
+        MDIconButton:
+            size_hint:None,None
+            size:dp(55),dp(30)
+            icon:'minus'
+            theme_text_color:'Custom'
+            text_color:buttons_color
+            pos_hint:{'center_y':.5}
+            on_release:
+                root.font_size_minus()
 
-                    ToolsWidgetButton:
-                        text:'{ }'
-                        color:buttons_color
-                        pos_hint:{'center_x':.35,'center_y':.5}
-                        on_release:
-                            root._dict(root.code_input.cursor)
-
-                    ToolsWidgetButton:
-                        text:'[ ]'
-                        color:buttons_color
-                        pos_hint:{'center_x':.15,'center_y':.5}
-                        on_release:
-                            root._list(root.code_input.cursor)
+    FloatLayout:
+        size_hint:None,None
+        size:dp(30),dp(50)
+        MDFloatingActionButton:
+            icon:'close'
+            size_hint:None,None
+            size:dp(40),dp(40)
+            pos_hint:{'center_x':.3,'center_y':.32}
+            md_bg_color:hex('51cc0e')
+            on_release:
+                app.sm.transition.direction = 'right'
+                app.sm.current = 'menu'
+                root.output.text = ''

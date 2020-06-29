@@ -9,6 +9,8 @@ if kivy.utils.platform == 'android':
     )
     from android.runnable import run_on_ui_thread
     from jnius import autoclass
+    import android
+
 else:
     run_on_ui_thread = lambda x:x
 
@@ -20,7 +22,7 @@ from kivy.uix.screenmanager import Screen
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.codeinput import CodeInput
 
-from kivy.properties import ListProperty ,NumericProperty ,StringProperty
+from kivy.properties import ListProperty ,NumericProperty ,StringProperty ,ObjectProperty
 from kivy.animation import Animation
 
 from kivy.utils import get_color_from_hex as hex
@@ -30,5 +32,4 @@ from kivy.lang import Builder
 from kivymd.toast import toast
 
 from io import StringIO
-import sys, threading, os
-import ast, traceback
+import sys, threading, os, ast, traceback, time
